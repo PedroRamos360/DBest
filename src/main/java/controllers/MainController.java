@@ -847,6 +847,7 @@ public class MainController extends MainFrame {
     @Override
     public void keyPressed(KeyEvent event) {
         int keyCode = event.getKeyCode();
+        boolean isCtrlPressed = (event.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0;
 
         if (keyCode == KeyEvent.VK_S) {
             if (this.jCell != null) {
@@ -894,13 +895,12 @@ public class MainController extends MainFrame {
             if (this.jCell != null && CellUtils.getActiveCell(this.jCell).isPresent()) {
                 CellUtils.getActiveCell(this.jCell).get().getTree().getTreeLayer();
             }
-//        } else if (keyCode == KeyEvent.VK_Z && (event.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0) {
-//            commandController.undo();
-//        } else if (keyCode == KeyEvent.VK_Y && (event.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0) {
-//            commandController.redo();
         } else if (keyCode == KeyEvent.VK_M) {
+        } else if (isCtrlPressed && keyCode == KeyEvent.VK_Z) {
+            commandController.undo();
+        } else if (isCtrlPressed && keyCode == KeyEvent.VK_Y) {
+            commandController.redo();
         }
-
     }
 
     private void edgeAction() {
