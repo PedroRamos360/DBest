@@ -50,11 +50,10 @@ public final class OperationCell extends Cell {
     private final Class<? extends IOperator> operatorClass;
 
     private Boolean hasBeenInitialized;
-    
+
     public OperationCell(mxCell jCell, OperationType type) {
         super(
-                type.getFormattedDisplayName(), jCell, ConstantController.OPERATION_CELL_HEIGHT
-        );
+                type.getFormattedDisplayName(), jCell, ConstantController.OPERATION_CELL_HEIGHT);
 
         this.parents = new ArrayList<>();
         this.arguments = new ArrayList<>();
@@ -73,8 +72,8 @@ public final class OperationCell extends Cell {
         this.arguments = arguments;
         this.alias = alias;
 
-        //if (parents != null && !parents.isEmpty()) 
-        
+        // if (parents != null && !parents.isEmpty())
+
         {
             this.hasBeenInitialized = true;
             this.parents = parents;
@@ -89,7 +88,7 @@ public final class OperationCell extends Cell {
     }
 
     public void editOperation(mxCell jCell) {
-        if (!(this.hasBeenInitialized || type==OperationType.CONDITION || type==OperationType.REFERENCE)) {
+        if (!(this.hasBeenInitialized || type == OperationType.CONDITION || type == OperationType.REFERENCE)) {
             return;
         }
 
@@ -107,7 +106,7 @@ public final class OperationCell extends Cell {
     }
 
     public void updateOperation() {
-        if (!(this.hasBeenInitialized || type==OperationType.CONDITION)) {
+        if (!(this.hasBeenInitialized || type == OperationType.CONDITION)) {
             return;
         }
 
@@ -136,10 +135,10 @@ public final class OperationCell extends Cell {
     public OperationType getType() {
         return this.type;
     }
-    
+
     @Override
-    public boolean alwaysAllowConnections(){
-        if (this.type!=null)
+    public boolean alwaysAllowConnections() {
+        if (this.type != null)
             return this.type.allwaysAllowConnections;
         return super.alwaysAllowConnections();
     }
@@ -260,11 +259,13 @@ public final class OperationCell extends Cell {
 
     public OperationCell copy() {
         OperationCell operationCell = new OperationCell(
-                this.jCell, this.type, new ArrayList<>(this.parents), new ArrayList<>(this.arguments), getAlias()
-        );
+                this.jCell, this.type, new ArrayList<>(this.parents), new ArrayList<>(this.arguments), getAlias());
 
         operationCell.name = this.name;
         operationCell.alias = this.alias;
+        operationCell.errorMessage = this.getErrorMessage();
+        operationCell.error = this.error;
+        operationCell.hasBeenInitialized = this.hasBeenInitialized;
 
         return operationCell;
     }
@@ -272,8 +273,8 @@ public final class OperationCell extends Cell {
     public void updateFrom(OperationCell cell) {
         this.name = cell.name;
         this.alias = cell.alias;
-        this.parents = cell.parents;
-        this.arguments = cell.arguments;
+        this.parents = new ArrayList<>(cell.parents);
+        this.arguments = new ArrayList<>(cell.arguments);
         this.hasBeenInitialized = cell.hasBeenInitialized;
         this.error = cell.error;
         this.errorMessage = cell.errorMessage;
@@ -287,18 +288,18 @@ public final class OperationCell extends Cell {
     public String getErrorMessage() {
         return this.hasError() ? this.errorMessage : ConstantController.getString("cell.operationCell.error.noError");
     }
-    
+
     public List<Column> getColumns() {
-            
-        if (operator!=null && operator instanceof Reference){
+
+        if (operator != null && operator instanceof Reference) {
             setColumns();
         }
         return this.columns;
-        
+
     }
 
     public void setColumns() {
-        //List<Column> columns = new ArrayList<>();
+        // List<Column> columns = new ArrayList<>();
         columns.clear();
         ReferedDataSource dataSources[] = null;
         try {
@@ -317,7 +318,7 @@ public final class OperationCell extends Cell {
             }
         }
 
-        //this.columns = columns;
+        // this.columns = columns;
     }
 
     public void setColumnsOld() {
@@ -357,33 +358,34 @@ public final class OperationCell extends Cell {
         this.operator = operator;
         this.setColumns();
     }
-    
-    public void asOperator(String newName){
-        //if (!(operator instanceof SingleSource)) return;
+
+    public void asOperator(String newName) {
+        // if (!(operator instanceof SingleSource)) return;
         operator.setDataSourceAlias(newName);
         this.alias = newName;
         jCell.setValue(newName);
         adjustWidthSize();
-        if (operator instanceof SingleSource){
+        if (operator instanceof SingleSource) {
             changeSourceNames(newName);
         }
         TreeUtils.updateTreeBelow(this);
     }
-    
-    public void setAlias(String alias){
+
+    public void setAlias(String alias) {
         this.alias = alias;
     }
 
-    public void adjustWidthSize(){
+    public void adjustWidthSize() {
         this.width = Math.max(CellUtils.getCellWidth(jCell), ConstantController.TABLE_CELL_WIDTH);
         String a = alias;
         if (!a.isBlank())
-            a = ":"+a;
-        String formattedName = this.getType().symbol+a+arguments;
+            a = ":" + a;
+        String formattedName = this.getType().symbol + a + arguments;
         changeCellName(jCell, formattedName, ConstantController.TABLE_CELL_WIDTH);
 
     }
-    private void changeSourceNames(String newName){
+
+    private void changeSourceNames(String newName) {
 
         List<Column> newColumns = new ArrayList<>();
 

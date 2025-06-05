@@ -17,8 +17,10 @@ public class CommandController {
     }
 
     public void execute(Command command) {
-        if (command == null) return;
+        if (command == null)
+            return;
 
+        System.out.println(command);
         command.execute();
 
         this.history.add(command);
@@ -27,7 +29,10 @@ public class CommandController {
     }
 
     public void execute(UndoableRedoableCommand command) {
-        if (command == null) return;
+        if (command == null)
+            return;
+
+        System.out.println(command);
 
         command.execute();
 
@@ -37,9 +42,11 @@ public class CommandController {
     }
 
     public void undo() {
-        if (this.undos.isEmpty()) return;
+        if (this.undos.isEmpty())
+            return;
 
         UndoableRedoableCommand command = this.undos.pop();
+        System.out.println(command);
 
         command.undo();
 
@@ -48,9 +55,11 @@ public class CommandController {
     }
 
     public void redo() {
-        if (this.redos.isEmpty()) return;
+        if (this.redos.isEmpty())
+            return;
 
         UndoableRedoableCommand command = this.redos.pop();
+        System.out.println(command);
 
         command.redo();
 
