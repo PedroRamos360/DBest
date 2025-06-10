@@ -32,7 +32,7 @@ public class CommandController {
         if (command == null)
             return;
 
-        System.out.println(command);
+        System.out.println("Executing: " + command);
 
         command.execute();
 
@@ -46,7 +46,7 @@ public class CommandController {
             return;
 
         UndoableRedoableCommand command = this.undos.pop();
-        System.out.println(command);
+        System.out.println("Undoing: " + command);
 
         command.undo();
 
@@ -59,7 +59,7 @@ public class CommandController {
             return;
 
         UndoableRedoableCommand command = this.redos.pop();
-        System.out.println(command);
+        System.out.println("Redoing: " + command);
 
         command.redo();
 

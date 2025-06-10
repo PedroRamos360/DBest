@@ -72,7 +72,7 @@ public class MainController extends MainFrame {
 
     private final AtomicReference<CurrentAction> currentActionReference = new AtomicReference<>(ConstantController.NONE_ACTION);
 
-    public static final AtomicReference<Edge> currentEdgeReference = new AtomicReference<>(new Edge());
+    private AtomicReference<Edge> currentEdgeReference = new AtomicReference<>(new Edge());
 
     private static final Map<Integer, Tree> trees = new HashMap<>();
 
@@ -518,11 +518,11 @@ public class MainController extends MainFrame {
         commandController.execute(new RemoveCellCommand(new AtomicReference<>(jCell)));
     }
 
-    public static void resetCurrentEdgeReferenceValue(Edge edge) {
-        currentEdgeReference.set(edge);
+    public void resetCurrentEdgeReferenceValue(Edge edge) {
+        this.currentEdgeReference.set(edge);
     }
 
-    public static void resetCurrentEdgeReferenceValue() {
+    public void resetCurrentEdgeReferenceValue() {
         resetCurrentEdgeReferenceValue(new Edge());
     }
 
@@ -904,7 +904,7 @@ public class MainController extends MainFrame {
     }
 
     private void edgeAction() {
-        resetEdge();
+        this.currentEdgeReference.set(new Edge());
         setEdgeCursor();
         this.currentActionReference.set(new CurrentAction(CurrentAction.ActionType.CREATE_EDGE));
     }

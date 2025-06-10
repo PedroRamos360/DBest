@@ -11,6 +11,8 @@ import enums.OperationArity;
 import enums.OperationType;
 import gui.frames.forms.operations.IOperationForm;
 import operations.IOperator;
+
+import org.apache.commons.lang3.SerializationUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
@@ -30,6 +32,8 @@ public class ExecuteOperationCommand extends BaseUndoableRedoableCommand {
 
     private final Cell cell;
     private Cell cellCopy;
+    private final Cell parentCellForUndo;
+    private final OperationCell childCellForUndo;
 
     public ExecuteOperationCommand(
             @NotNull AtomicReference<mxCell> cellReference,
@@ -41,6 +45,8 @@ public class ExecuteOperationCommand extends BaseUndoableRedoableCommand {
         this.edgeReference = edgeReference;
         this.cell = cell;
         this.cellCopy = null;
+        this.childCellForUndo = (OperationCell) cell;
+        this.parentCellForUndo = CellUtils.getActiveCell(edgeReference.get().getParent()).orElse(null);
     }
 
     @Override
@@ -136,9 +142,9 @@ public class ExecuteOperationCommand extends BaseUndoableRedoableCommand {
 
         Cell parentCell = optionalParentCell.get();
 
-        operationCell.removeParent(parentCell);
+        operationCell.removeParent(this.parentCellForUndo);
 
-        parentCell.setChild(null);
+        this.parentCellForUndo.setChild(null);
 
         operationCell.setAllNewTrees();
 
